@@ -13,7 +13,7 @@ function SignUp() {
 
   const mutation = useMutation({
     mutationFn: async (newUser: SignUpFormInputs) => {
-      const response = await fetch('http://localhost:3000/user/register', {
+      const response = await fetch('https://user-registration-app-duan.onrender.com/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser),
