@@ -13,7 +13,7 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<LoginFormInputs> = () => {
     alert("Login successful!");
     navigate("/");
   }
