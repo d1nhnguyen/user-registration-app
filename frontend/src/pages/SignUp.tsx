@@ -1,6 +1,7 @@
-import { TextField, Button, Box, Typography } from '@mui/material';
-import { useForm, type SubmitHandler } from 'react-hook-form';4
+import { TextField, Button, Box, Typography, Link } from '@mui/material';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface SignUpFormInputs {
   email: string;
@@ -8,8 +9,8 @@ interface SignUpFormInputs {
 }
 
 function SignUp() {
-
   const { register, handleSubmit, formState: { errors } } = useForm<SignUpFormInputs>();
+  const navigate = useNavigate();
 
   const mutation = useMutation({
     mutationFn: async (newUser: SignUpFormInputs) => {
@@ -20,7 +21,8 @@ function SignUp() {
       });
 
       if (!response.ok) {
-        throw new Error('Registration failed');
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
       }
       
       return response.json();
@@ -28,8 +30,8 @@ function SignUp() {
     onSuccess: () => {
       alert("Registration Successful! 🎉");
     },
-    onError: () => {
-      alert("Registration Failed 😢");
+    onError: (error: Error) => {
+      alert(`Registration Failed: ${error.message}`);
     }
   });
 
@@ -43,28 +45,51 @@ function SignUp() {
       
       <TextField 
         label="Email" 
-        {...register("email", { required: "Email is required" })} 
+        {...register("email", { 
+          required: "Email is required",
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "Invalid email address"
+          }
+        })} 
         error={!!errors.email}
         helperText={errors.email?.message}
       />
+      
       <TextField 
         label="Password" 
         type='password'
-        {...register("password", { required: "Password is required"})} 
+        {...register("password", { 
+          required: "Password is required",
+          minLength: {
+            value: 6,
+            message: "Password must be at least 6 characters"
+          }
+        })} 
         error={!!errors.password}
         helperText={errors.password?.message}
       />
+      
       <Button 
         variant="contained" 
         onClick={handleSubmit(onSubmit)}
-        disabled={mutation.isPending} // <--- preventing double clicks!
+        disabled={mutation.isPending}
       >
         {mutation.isPending ? 'Registering...' : 'Register'} 
       </Button>
-      
+
+      <Typography variant="body2" textAlign="center">
+        Already have an account?{' '}
+        <Link 
+          component="button" 
+          variant="body2" 
+          onClick={() => navigate('/login')}
+        >
+          Login
+        </Link>
+      </Typography>
     </Box>
   );
-  
 }
 
 export default SignUp;
