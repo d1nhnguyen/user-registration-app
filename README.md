@@ -211,11 +211,3 @@ Register a new user account.
 ---
 
 * GitHub: [@d1nhnguyen](https://github.com/d1nhnguyen)
-
----
-
-## 🙏 Acknowledgments
-
-* NestJS for the amazing backend framework
-* Material UI for the beautiful components
-* React Query for simplified state management
